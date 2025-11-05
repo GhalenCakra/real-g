@@ -1,5 +1,3 @@
-# real_g
-
 A new Flutter project.
 
 ## Getting Started
