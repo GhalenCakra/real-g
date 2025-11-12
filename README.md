@@ -55,3 +55,30 @@ BuildContext menyediakan informasi posisi widget dalam widget tree dan memungkin
 
 # 6. Jelaskan konsep "hot reload" di Flutter dan bagaimana bedanya dengan "hot restart".
 Fitur hot reload untuk mempercepat proses debugging dan penyesuaian UI. Hot reload mempertahankan state aplikasi dan hanya memperbarui bagian tampilan yang berubah, sehingga sangat efisien ketika mengatur tampilan. Sedangkan hot restart digunakan ketika perubahan membutuhkan inisialisasi ulang seluruh aplikasi, termasuk state yang tersimpan. Perbedaannya utama adalah hot reload mempertahankan state, sementara hot restart mengulang kembali aplikasi dari awal.
+
+# Tugas 8
+# 1. Jelaskan perbedaan antara Navigator.push() dan Navigator.pushReplacement() pada Flutter. Dalam kasus apa sebaiknya masing-masing digunakan pada aplikasi Football Shop kamu?
+Dalam proses pengembangan aplikasi Real G Shop, saya mempelajari konsep navigasi halaman pada Flutter menggunakan dua metode utama, yaitu Navigator.push() dan Navigator.pushReplacement().
+Perbedaan mendasarnya terletak pada bagaimana keduanya memperlakukan halaman sebelumnya.
+Navigator.push() digunakan untuk menambahkan halaman baru di atas halaman yang sedang aktif, sehingga pengguna masih dapat kembali ke halaman sebelumnya menggunakan tombol “back”.
+Sedangkan Navigator.pushReplacement() digunakan untuk mengganti halaman saat ini dengan halaman baru, sehingga halaman sebelumnya tidak tersimpan di stack dan pengguna tidak dapat kembali ke halaman tersebut.
+Dalam aplikasi Real G Shop, saya menggunakan Navigator.push() ketika pengguna berpindah dari menu utama ke halaman detail produk, agar pengguna tetap bisa kembali ke menu.
+Sebaliknya, Navigator.pushReplacement() digunakan setelah proses logout, agar halaman utama digantikan oleh halaman login dan pengguna tidak bisa kembali ke sesi sebelumnya.
+
+# 2. Bagaimana kamu memanfaatkan hierarchy widget seperti Scaffold, AppBar, dan Drawer untuk membangun struktur halaman yang konsisten di seluruh aplikasi?
+Saya memanfaatkan hierarchy widget seperti Scaffold, AppBar, dan Drawer.
+Widget Scaffold berperan sebagai struktur dasar setiap halaman, yang memudahkan saya mengatur elemen utama seperti AppBar, body, dan Drawer.
+AppBar saya gunakan untuk menampilkan judul dan identitas aplikasi secara konsisten di bagian atas layar.
+Sementara Drawer berfungsi sebagai navigasi samping yang menyediakan akses cepat ke berbagai fitur seperti daftar produk, tambah produk, dan profil pengguna.
+
+# 3. Dalam konteks desain antarmuka, apa kelebihan menggunakan layout widget seperti Padding, SingleChildScrollView, dan ListView saat menampilkan elemen-elemen form? Berikan contoh penggunaannya dari aplikasi kamu.
+Dalam konteks desain antarmuka, saya menggunakan layout widget seperti Padding, SingleChildScrollView, dan ListView untuk mengatur tata letak form agar tetap rapi dan responsif di berbagai ukuran layar.
+Padding membantu memberi jarak antar elemen agar tampilan tidak terlalu rapat dan lebih mudah dibaca.
+SingleChildScrollView saya gunakan agar halaman form tetap dapat di-scroll saat kontennya melebihi tinggi layar, khususnya ketika keyboard aktif.
+ListView digunakan untuk menampilkan elemen form secara vertikal dengan kemampuan scrolling otomatis tanpa harus menambahkan pengaturan posisi manual.
+Sebagai contoh, pada halaman Create Product, saya menggabungkan Padding untuk memberi jarak antar field input, SingleChildScrollView agar form bisa digulir, dan ListView untuk menampung elemen input seperti TextField dan tombol submit.
+
+# 4.  Bagaimana kamu menyesuaikan warna tema agar aplikasi Football Shop memiliki identitas visual yang konsisten dengan brand toko?
+Saya menetapkan warna biru sebagai warna utama (primary color) melalui konfigurasi ThemeData pada widget MaterialApp.
+Warna ini diterapkan secara konsisten pada AppBar, tombol utama, dan elemen interaktif lainnya untuk memberikan kesan profesional dan tegas sesuai karakter brand toko.
+Dengan pendekatan ini, seluruh tampilan aplikasi memiliki keseragaman warna dan identitas yang mudah dikenali pengguna.

@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:real_g/widgets/left_drawer.dart';
+import 'package:real_g/screens/product_form.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
 
-  final String nama = "Ghalen Cakra Permana"; // nama
-  final String npm = "2406437306"; // npm
-  final String kelas = "B"; // kelas
+  final String nama = "Ghalen Cakra Permana";
+  final String npm = "2406437306";
+  final String kelas = "B";
 
   final List<ItemHomepage> items = [
-    ItemHomepage("All Products", Icons.newspaper),
-    ItemHomepage("My Products", Icons.add),
-    ItemHomepage("Create Product", Icons.logout),
+    ItemHomepage("All Products", Icons.list),
+    ItemHomepage("My Products", Icons.shopping_bag),
+    ItemHomepage("Create Product", Icons.add_box),
   ];
 
   @override
@@ -26,6 +28,7 @@ class MyHomePage extends StatelessWidget {
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
+      drawer: const LeftDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -105,19 +108,25 @@ class ItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: item.name == "All Products"
-            ? Colors.blue
-            : item.name == "My Products"
-        ? Colors.green
-        : Colors.red, // Create Product
-
+          ? Colors.blue
+          : item.name == "My Products"
+              ? Colors.green
+              : Colors.red, // Create Product
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: () {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(content: Text("Kamu telah menekan tombol ${item.name}!"))
+          if (item.name == "Create Product") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ProductFormPage()),
             );
+          } else {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(SnackBar(
+                  content: Text("Kamu menekan tombol ${item.name}!")));
+          }
         },
         child: Container(
           padding: const EdgeInsets.all(8),
