@@ -1,5 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:real_g/models/product_entry.dart';
+
+/// BASE URL AUTO-DETECT
+String getBaseUrl() {
+  if (kIsWeb) {
+    return "http://127.0.0.1:8000";
+  } else {
+    return "http://10.0.2.2:8000"; // Android emulator
+  }
+}
 
 class ProductEntryCard extends StatelessWidget {
   final ProductEntry product;
@@ -13,6 +23,9 @@ class ProductEntryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final imageUrl =
+        "${getBaseUrl()}/proxy-image/?url=${Uri.encodeComponent(product.thumbnail)}";
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: InkWell(
@@ -28,7 +41,7 @@ class ProductEntryCard extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Image.network(
-                  "http://127.0.0.1:8000/proxy-image/?url=${Uri.encodeComponent(product.thumbnail)}",
+                  imageUrl,
                   width: 120,
                   height: 120,
                   fit: BoxFit.cover,
@@ -58,7 +71,7 @@ class ProductEntryCard extends StatelessWidget {
                       )
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),

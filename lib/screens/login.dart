@@ -26,6 +26,7 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -33,38 +34,49 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Username
+
+              // ============================
+              // USERNAME
+              // ============================
               TextFormField(
                 decoration: const InputDecoration(
                   labelText: "Username",
                   border: OutlineInputBorder(),
                 ),
-                onChanged: (value) {
-                  _username = value;
+                onChanged: (value) => _username = value,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Username tidak boleh kosong";
+                  }
+                  return null;
                 },
-                validator: (value) =>
-                    value == null || value.isEmpty ? "Tidak boleh kosong" : null,
               ),
 
               const SizedBox(height: 16),
 
-              // Password
+              // ============================
+              // PASSWORD
+              // ============================
               TextFormField(
                 decoration: const InputDecoration(
                   labelText: "Password",
                   border: OutlineInputBorder(),
                 ),
                 obscureText: true,
-                onChanged: (value) {
-                  _password = value;
+                onChanged: (value) => _password = value,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Password tidak boleh kosong";
+                  }
+                  return null;
                 },
-                validator: (value) =>
-                    value == null || value.isEmpty ? "Tidak boleh kosong" : null,
               ),
 
               const SizedBox(height: 24),
 
+              // ============================
               // LOGIN BUTTON
+              // ============================
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
@@ -74,12 +86,11 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    // Sesuaikan URL dengan deploy kamu!
                     final response = await request.login(
                       "http://127.0.0.1:8000/auth/login/",
                       {
-                        'username': _username,
-                        'password': _password,
+                        "username": _username,
+                        "password": _password,
                       },
                     );
 
@@ -87,9 +98,7 @@ class _LoginPageState extends State<LoginPage> {
 
                     if (request.loggedIn) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("Login berhasil. Selamat datang $_username"),
-                        ),
+                        SnackBar(content: Text("Login berhasil. Selamat datang $_username")),
                       );
 
                       Navigator.pushReplacement(
@@ -98,9 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(response["message"]),
-                        ),
+                        SnackBar(content: Text(response["message"])),
                       );
                     }
                   }
@@ -110,7 +117,9 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 10),
 
-              // Go to Register
+              // ============================
+              // GO TO REGISTER
+              // ============================
               TextButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/register');

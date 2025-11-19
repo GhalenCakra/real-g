@@ -1,5 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:real_g/models/product_entry.dart';
+
+/// BASE URL AUTO-DETECT
+String getBaseUrl() {
+  if (kIsWeb) {
+    return "http://127.0.0.1:8000";
+  } else {
+    return "http://10.0.2.2:8000"; // Android emulator
+  }
+}
 
 class ProductDetailPage extends StatelessWidget {
   final ProductEntry product;
@@ -17,30 +27,34 @@ class ProductDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // URL PROXY FIXED
+    final imageUrl =
+        "${getBaseUrl()}/proxy-image/?url=${Uri.encodeComponent(product.thumbnail)}";
+
     return Scaffold(
       appBar: AppBar(
         title: Text(product.title),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
       ),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            
+            // ==========================
             // THUMBNAIL
+            // ==========================
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: product.thumbnail.isNotEmpty
                   ? Image.network(
-                      "http://127.0.0.1:8000/proxy-image/?url=${Uri.encodeComponent(product.thumbnail)}",
-                       height: 250,
-                       width: double.infinity,
-                       fit: BoxFit.cover,
-                       errorBuilder: (_, __, ___) =>
-                       const Icon(Icons.broken_image, size: 60),
+                      imageUrl,
+                      height: 250,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) =>
+                          const Icon(Icons.broken_image, size: 60),
                     )
                   : Container(
                       height: 250,
@@ -52,7 +66,9 @@ class ProductDetailPage extends StatelessWidget {
 
             const SizedBox(height: 20),
 
+            // ==========================
             // TITLE
+            // ==========================
             Text(
               product.title,
               style: const TextStyle(
@@ -79,8 +95,8 @@ class ProductDetailPage extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
                     color: Colors.blue.shade100,
                     borderRadius: BorderRadius.circular(12),
@@ -108,7 +124,6 @@ class ProductDetailPage extends StatelessWidget {
               children: [
                 const Icon(Icons.star, color: Colors.amber),
                 Text(" ${product.rating}"),
-
                 const SizedBox(width: 20),
                 const Icon(Icons.visibility),
                 Text(" ${product.views} views"),
@@ -128,9 +143,7 @@ class ProductDetailPage extends StatelessWidget {
                 ),
                 child: const Text(
                   "FEATURED",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
 
@@ -139,10 +152,7 @@ class ProductDetailPage extends StatelessWidget {
             // DESCRIPTION
             const Text(
               "Description",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 8),
@@ -158,9 +168,7 @@ class ProductDetailPage extends StatelessWidget {
             // STOCK
             Text(
               "Stock: ${product.stock}",
-              style: const TextStyle(
-                fontSize: 16,
-              ),
+              style: const TextStyle(fontSize: 16),
             ),
 
             const SizedBox(height: 20),
@@ -177,7 +185,6 @@ class ProductDetailPage extends StatelessWidget {
 
             const SizedBox(height: 30),
 
-            // BACK BUTTON
             Center(
               child: ElevatedButton.icon(
                 onPressed: () => Navigator.pop(context),
@@ -188,7 +195,7 @@ class ProductDetailPage extends StatelessWidget {
                   foregroundColor: Colors.white,
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

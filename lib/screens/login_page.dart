@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import '../menu.dart'; // sesuaikan dengan folder kamu
+import '../menu.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -21,7 +21,11 @@ class _LoginPageState extends State<LoginPage> {
     final request = context.watch<CookieRequest>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Login")),
+      appBar: AppBar(
+        title: const Text("Login"),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+      ),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -66,7 +70,12 @@ class _LoginPageState extends State<LoginPage> {
 
                 if (!mounted) return;
 
-                if (response["status"] == true) {
+                // CEK LOGIN YANG BENAR:
+                if (request.loggedIn) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Login berhasil, selamat datang $_username")),
+                  );
+
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (_) => const MyHomePage()),
@@ -77,6 +86,11 @@ class _LoginPageState extends State<LoginPage> {
                   );
                 }
               },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
               child: const Text("Login"),
             ),
           ],

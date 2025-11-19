@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:real_g/widgets/left_drawer.dart';
-import 'package:real_g/screens/product_form.dart';
 import 'package:real_g/screens/all_products.dart';
 import 'package:real_g/screens/my_products.dart';
+import 'package:real_g/screens/product_form.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
@@ -24,18 +24,23 @@ class MyHomePage extends StatelessWidget {
         title: const Text(
           'Real G Shop',
           style: TextStyle(
-            color: Colors.white,
+            color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Colors.yellow,
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       drawer: const LeftDrawer(),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            // ======================
+            // INFO CARDS NPM / NAME / CLASS
+            // ======================
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -44,7 +49,9 @@ class MyHomePage extends StatelessWidget {
                 InfoCard(title: 'Class', content: kelas),
               ],
             ),
+
             const SizedBox(height: 16.0),
+
             const Text(
               'Selamat datang di Real G Shop',
               style: TextStyle(
@@ -52,7 +59,12 @@ class MyHomePage extends StatelessWidget {
                 fontSize: 18.0,
               ),
             ),
+
             const SizedBox(height: 16.0),
+
+            // ======================
+            // GRID MENU
+            // ======================
             GridView.count(
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
@@ -117,23 +129,33 @@ class ItemCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: () {
-          if (item.name == "All Products") {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const AllProductsPage()),
-            );
-          } else if (item.name == "My Products") {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const MyProductsPage()),
-            );
-          } else if (item.name == "Create Product") {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ProductFormPage()),
-            );
+          // ============================
+          // NAVIGASI GRID MENU SUDAH FIX
+          // ============================
+          switch (item.name) {
+            case "All Products":
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const AllProductsPage()),
+              );
+              break;
+
+            case "My Products":
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const MyProductsPage()),
+              );
+              break;
+
+            case "Create Product":
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProductFormPage()),
+              );
+              break;
           }
         },
+
         child: Container(
           padding: const EdgeInsets.all(8),
           child: Center(

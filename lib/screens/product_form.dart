@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
@@ -5,20 +6,14 @@ import 'package:real_g/widgets/left_drawer.dart';
 import 'package:validators/validators.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
-// ===================================================
-// AUTO-DETECT BASE URL UNTUK WEB & ANDROID
-// ===================================================
 String getBaseUrl() {
   if (kIsWeb) {
-    return "http://127.0.0.1:8000";   // Flutter Web (browser)
+    return "http://127.0.0.1:8000";
   } else {
-    return "http://10.0.2.2:8000";    // Android Emulator
+    return "http://10.0.2.2:8000";
   }
 }
 
-// ===================================================
-// FORM PAGE
-// ===================================================
 class ProductFormPage extends StatefulWidget {
   const ProductFormPage({super.key});
 
@@ -29,7 +24,6 @@ class ProductFormPage extends StatefulWidget {
 class _ProductFormPageState extends State<ProductFormPage> {
   final _formKey = GlobalKey<FormState>();
 
-  // --- STATE ---
   String _name = "";
   double _price = 0;
   String _description = "";
@@ -47,56 +41,42 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    final request = context.watch<CookieRequest>();
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Tambah Produk Baru",
-          style: TextStyle(color: Colors.white),
-        ),
+        title: const Text("Tambah Produk Baru",
+            style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
       ),
       drawer: const LeftDrawer(),
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               // NAMA PRODUK
               TextFormField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Nama Produk",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
+                  border: OutlineInputBorder(),
                 ),
                 onChanged: (value) => _name = value,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "Nama tidak boleh kosong!";
                   }
-                  if (value.length < 3) {
-                    return "Nama minimal 3 karakter!";
-                  }
                   return null;
                 },
               ),
-
               const SizedBox(height: 16),
 
               // HARGA
               TextFormField(
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Harga (Rp)",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
+                  border: OutlineInputBorder(),
                 ),
+                keyboardType: TextInputType.number,
                 onChanged: (value) =>
                     _price = double.tryParse(value) ?? 0,
                 validator: (value) {
@@ -109,17 +89,14 @@ class _ProductFormPageState extends State<ProductFormPage> {
                   return null;
                 },
               ),
-
               const SizedBox(height: 16),
 
               // DESKRIPSI
               TextFormField(
                 maxLines: 4,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Deskripsi Produk",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
+                  border: OutlineInputBorder(),
                 ),
                 onChanged: (value) => _description = value,
                 validator: (value) {
@@ -129,112 +106,97 @@ class _ProductFormPageState extends State<ProductFormPage> {
                   return null;
                 },
               ),
-
               const SizedBox(height: 16),
 
-              // THUMBNAIL URL
+              // THUMBNAIL
               TextFormField(
-                decoration: InputDecoration(
-                  labelText: "URL Thumbnail (opsional)",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
+                decoration: const InputDecoration(
+                  labelText: "URL Thumbnail (Opsional)",
+                  border: OutlineInputBorder(),
                 ),
                 onChanged: (value) => _thumbnail = value,
                 validator: (value) {
-                  if (value != null && value.isNotEmpty && !isURL(value)) {
+                  if (value != null &&
+                      value.isNotEmpty &&
+                      !isURL(value)) {
                     return "URL tidak valid!";
                   }
                   return null;
                 },
               ),
-
               const SizedBox(height: 16),
 
               // KATEGORI
-              DropdownButtonFormField<String>(
+              DropdownButtonFormField(
                 value: _category,
-                decoration: InputDecoration(
-                  labelText: "Kategori",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
                 items: _categories
-                    .map((cat) => DropdownMenuItem(
-                          value: cat,
-                          child: Text(cat),
-                        ))
+                    .map((e) =>
+                        DropdownMenuItem(value: e, child: Text(e)))
                     .toList(),
-                onChanged: (value) => setState(() {
-                  _category = value!;
-                }),
+                onChanged: (v) => setState(() => _category = v!),
+                decoration: const InputDecoration(
+                  labelText: "Kategori",
+                  border: OutlineInputBorder(),
+                ),
               ),
-
               const SizedBox(height: 16),
 
               // FEATURED SWITCH
               SwitchListTile(
+                title: const Text("Featured"),
                 value: _isFeatured,
-                title: const Text("isFeatured"),
-                onChanged: (value) => setState(() {
-                  _isFeatured = value;
-                }),
+                onChanged: (v) => setState(() => _isFeatured = v),
               ),
-
               const SizedBox(height: 24),
 
-              // TOMBOL SAVE
-              Center(
-                child: ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
+              // ====== SAVE BUTTON ======
+              ElevatedButton(
+                onPressed: () async {
+                  if (!_formKey.currentState!.validate()) return;
 
-                      final response = await request.post(
-                        "${getBaseUrl()}/create-flutter/",
-                        {
-                          "title": _name,
-                          "price": _price.toString(),
-                          "description": _description,
-                          "thumbnail": _thumbnail,
-                          "category": _category,
-                          "is_featured": _isFeatured.toString(),
-                          "stock": "10",
-                          "rating": "5",
-                          "brand": "Adidas",
-                        },
-                      );
+                  final request = context.read<CookieRequest>();
 
-                      if (!mounted) return;
+                  final response = await request.postJson(
+                    "${getBaseUrl()}/create-flutter/",
+                    jsonEncode({
+                      "title": _name,
+                      "price": _price,
+                      "description": _description,
+                      "thumbnail": _thumbnail,
+                      "category": _category,
+                      "is_featured": _isFeatured,
+                      "stock": 10,
+                      "rating": 5,
+                      "brand": "Adidas",
+                    }),
+                  );
 
-                      if (response["status"] == "success") {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Produk berhasil ditambahkan!"),
-                          ),
-                        );
+                  if (!mounted) return;
 
-                        Navigator.pop(context);
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              "Gagal: ${response["message"] ?? "Unknown error"}",
-                            ),
-                          ),
-                        );
-                      }
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 12, horizontal: 32),
-                  ),
-                  child: const Text("Save", style: TextStyle(fontSize: 16)),
+                  if (response["status"] == "success") {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content:
+                              Text("Produk berhasil ditambahkan!")),
+                    );
+                    Navigator.pop(context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                            "Gagal: ${response['message'] ?? 'Unknown error'}"),
+                      ),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 12, horizontal: 32),
                 ),
-              )
+                child: const Text("Save"),
+              ),
             ],
           ),
         ),
