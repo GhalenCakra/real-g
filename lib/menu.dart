@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:real_g/widgets/left_drawer.dart';
 import 'package:real_g/screens/product_form.dart';
+import 'package:real_g/screens/all_products.dart';
+import 'package:real_g/screens/my_products.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
@@ -115,17 +117,21 @@ class ItemCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: () {
-          if (item.name == "Create Product") {
+          if (item.name == "All Products") {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => const ProductFormPage()),
+              MaterialPageRoute(builder: (context) => const AllProductsPage()),
             );
-          } else {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(SnackBar(
-                  content: Text("Kamu menekan tombol ${item.name}!")));
+          } else if (item.name == "My Products") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const MyProductsPage()),
+            );
+          } else if (item.name == "Create Product") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ProductFormPage()),
+            );
           }
         },
         child: Container(
